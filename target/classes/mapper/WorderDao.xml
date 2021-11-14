@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ly.dao.WorderDao">
+    <select id="findwOid" resultType="Integer">
+        select MAX(wOid) from wmordert
+    </select>
+
+    <select id="findmordertBywOid" resultType="com.ly.model.Gworder">
+        select * from wmgordert where wOid=#{wOid}
+    </select>
+
+    <select id="findMidByWeekday" resultType="Integer">
+        select mid from weekmenu where weekday=#{weekday}
+    </select>
+
+    <insert id="intowOrdert" parameterType="com.ly.model.Worder">
+        insert into wmordert (wtime,name,year,month,week) values (#{wtime},#{name},#{year},#{month},#{week})
+    </insert>
+
+    <insert id="timeintoWordert" parameterType="com.ly.model.Worder">
+         insert into wmordert (year,month,weeek) values (#{year},#{time},#{week})
+    </insert>
+
+    <insert id="intoGwordert" parameterType="com.ly.model.Gworder">
+        insert into wmgordert (mid,year,month,week,weekday,meatone,meattwo,vegetable,soup,wOid)
+        values (#{mid},#{year},#{month},#{week},#{weekday},#{meatone},#{meattwo},#{vegetable},#{soup},#{wOid});
+    </insert>
+</mapper>

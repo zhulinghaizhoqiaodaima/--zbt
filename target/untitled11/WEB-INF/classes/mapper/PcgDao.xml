@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ly.dao.PcgDao">
+     <select id="findPcgPlan" resultType="com.ly.model.Pcgplan">
+          select * from pcgplan order by Ppid desc
+     </select>
+
+    <select id="CfindPcgPlanByCtime" resultType="com.ly.model.Pcgplan">
+        select * from pcgplan
+        <where>
+            <if test="ctime!='' and ctime!=null" >
+                ctime like concat('%',#{ctime},'%')
+            </if>
+        </where>
+        order by Ppid desc
+    </select>
+
+    <select id="CfindPcgPlan" resultType="com.ly.model.Pcgplan">
+        select * from pcgplan
+        <where>
+            <if test="state!='验收状态'" >
+                state=#{state}
+            </if>
+            <if test="ARstate!='报销状态'">
+                and ARstate=#{ARstate}
+            </if>
+        </where>
+        order by Ppid desc
+    </select>
+
+    <select id="findPcgPlanByState" resultType="com.ly.model.Pcgplan">
+        select * from pcgplan where Ivtstate="已入库"
+    </select>
+
+    <select id="findPcgmByPgid" resultType="com.ly.model.Pcgplan">
+        select * from pcgordert where Pgid=#{pgid}
+    </select>
+
+    <select id="findPcgPlanByPpid" resultType="com.ly.model.Pcgplan">
+        select * from pcgordert where Ppid=#{ppid}
+    </select>
+
+    <select id="findPpidByPgid" resultType="Integer">
+        select Ppid from pcgordert where Pgid=#{pgid}
+    </select>
+
+    <select id="findSumByPpid" resultType="Integer">
+        select SUM(ksum) from pcgordert where Ppid=#{ppid}
+    </select>
+
+    <select id="findIvtlist" resultType="com.ly.model.Ivt">
+        select * from ivtlist
+    </select>
+
+    <select id="CfindIvtlist" resultType="com.ly.model.Ivt">
+        select * from ivtlist
+        <where>
+            <if test="kind!='选择种类'" >
+                kind=#{kind}
+            </if>
+            <if test="imessage !='' and imessage!=null">
+                and imessage like concat('%',#{imessage},'%')
+            </if>
+        </where>
+        order by Ivid desc
+    </select>
+
+    <select id="findIvtByname" resultType="com.ly.model.Ivt">
+        select * from ivtlist where imessage=#{imessage}
+    </select>
+
+    <select id="findIvtByIvid" resultType="com.ly.model.Ivt">
+        select * from ivtlist where Ivid=#{ivid}
+    </select>
+
+    <select id="findIvtByPpid" resultType="Integer">
+        select COUNT(*) from ivtlist where Ppid=#{ppid}
+    </select>
+
+    <select id="findOutIvt" resultType="com.ly.model.OutIvt">
+         select * from outivt order by oid desc
+    </select>
+
+    <select id="CfindOutIvt" resultType="com.ly.model.OutIvt">
+        select * from outivt
+        <where>
+            <if test="uname !='' and uname!=null">
+                uname like concat('%',#{uname},'%')
+            </if>
+            <if test="iname !='' and iname!=null">
+                and iname like concat('%',#{iname},'%')
+            </if>
+        </where>
+        order by oid desc
+    </select>
+
+    <select id="findAddIvt" resultType="com.ly.model.AddIvt">
+         select * from addivt order by Aid desc
+    </select>
+
+    <select id="CfindAddIvt" resultType="com.ly.model.AddIvt">
+        select * from addivt
+        <where>
+            <if test="kind!='选择种类'" >
+                kind=#{kind}
+            </if>
+            <if test="iname !='' and iname!=null">
+                and iname like concat('%',#{iname},'%')
+            </if>
+        </where>
+        order by Aid desc
+    </select>
+
+    <insert id="intoPcgplan" parameterType="com.ly.model.Pcgplan">
+          insert into pcgplan (name,ctime) values (#{name},#{ctime})
+    </insert>
+
+    <insert id="intoPcgOrdert" parameterType="com.ly.model.Pcgplan">
+          insert into pcgordert (Ppid,kind,kmessage,num,unit,ksum,buyaddrs)
+          values (#{ppid},#{kind},#{kmessage},#{num},#{unit},#{ksum},#{buyaddrs})
+    </insert>
+
+    <insert id="intoIvtList" parameterType="com.ly.model.Ivt">
+          insert into ivtlist (kind,imessage,inum,unit) values (#{kind},#{imessage},#{inum},#{unit})
+    </insert>
+
+    <insert id="intoIvts" parameterType="java.util.List">
+        insert into ivtlist
+        (kind,imessage,inum,unit,Ppid)
+        values
+        <foreach item="pcg"  collection="pcgplangList" separator=",">
+            (#{pcg.kind},#{pcg.kmessage},#{pcg.num},#{pcg.unit},#{pcg.ppid})
+        </foreach>
+        ON DUPLICATE KEY UPDATE inum=inum+values(inum);
+
+        insert into addivt
+        (kind,iname,num,unit,buyaddress,Ppid)
+        values
+        <foreach item="pcg"  collection="pcgplangList" separator=",">
+            (#{pcg.kind},#{pcg.kmessage},#{pcg.num},#{pcg.unit},#{pcg.buyaddrs},#{pcg.ppid})
+        </foreach>
+    </insert>
+
+    <insert id="outIvt" parameterType="com.ly.model.OutIvt">
+         insert into outivt (iname,uname,cname,num,ctime) values (#{iname},#{uname},#{cname},#{num},#{ctime})
+    </insert>
+
+    <insert id="intoAddIvt" parameterType="com.ly.model.AddIvt">
+        insert into addivt (iname,cname,num,rtime,buyaddress) values (#{iname},#{cname},#{num},#{rtime},#{buyaddress})
+    </insert>
+
+    <update id="updateKindnum" parameterType="com.ly.model.Pcgplan">
+          update pcgplan set kindnum=kindnum+1 where Ppid=#{ppid};
+    </update>
+
+    <update id="reduceKindnum" parameterType="com.ly.model.Pcgplan">
+          update pcgplan set kindnum=kindnum-1 where Ppid=#{ppid}
+    </update>
+
+    <update id="updatePcgmByPgid" parameterType="com.ly.model.Pcgplan">
+          update pcgordert set kind=#{kind},kmessage=#{kmessage},num=#{num},unit=#{unit},ksum=#{ksum},buyaddrs=#{buyaddrs}
+                 where Pgid=#{pgid}
+    </update>
+
+    <update id="sumintoPcgplan" parameterType="com.ly.model.Pcgplan">
+          update pcgplan set sum=#{sum} where Ppid=#{ppid}
+    </update>
+
+    <update id="updateStateByPpid" parameterType="com.ly.model.Pcgplan">
+          update pcgplan set state="已验收",wtime=#{wtime} where Ppid=#{ppid}
+    </update>
+
+    <update id="updateARStateByPpid" parameterType="com.ly.model.Pcgplan">
+        update pcgplan set ARstate="已报销" where Ppid=#{ppid}
+    </update>
+
+    <update id="updateNumByName" parameterType="com.ly.model.Ivt">
+          update ivtlist set inum=inum+#{inum} where imessage=#{imessage}
+    </update>
+
+    <update id="updateIvtByIvid" parameterType="com.ly.model.Ivt">
+          update ivtlist set kind=#{kind},imessage=#{imessage},inum=#{inum},unit=#{unit} where Ivid=#{ivid}
+    </update>
+
+    <update id="updateIvtStateByPpid" parameterType="com.ly.model.Pcgplan">
+          update pcgplan set Ivtstate="已入库",rtime=#{rtime} where Ppid=#{ppid};
+          update addivt set rtime=#{rtime},cname=#{cname} where Ppid=#{ppid}
+    </update>
+
+    <update id="updateNum" parameterType="com.ly.model.Ivt">
+          update ivtlist set inum=inum-#{num} where imessage=#{iname}
+    </update>
+
+    <delete id="delpcgm" parameterType="com.ly.model.Pcgplan">
+        delete from pcgordert where Pgid=#{pgid}
+    </delete>
+
+    <delete id="delpcg" parameterType="com.ly.model.Pcgplan">
+        delete from pcgplan where Ppid=#{ppid};
+        delete from pcgordert where Ppid=#{ppid}
+    </delete>
+</mapper>

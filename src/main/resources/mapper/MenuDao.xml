@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ly.dao.MenuDao">
+    <select id="findWeekMenu" resultType="com.ly.model.Menu">
+        select * from weekmenu
+    </select>
+
+    <select id="PdMenu" resultType="com.ly.model.Menu">
+        select * from wmgordert where year=#{year} and month=#{month} and week=#{week} and weekday=#{weekday}
+    </select>
+
+    <select id="FcMenu" resultType="Integer">
+        select count(*) from weekmenu
+    </select>
+
+    <select id="selectMenuByMid" resultType="com.ly.model.Menu">
+        select * from weekmenu where mid=#{mid}
+    </select>
+
+    <select id="findWeek" resultType="com.ly.model.Worder">
+        select year,month,week,weekday from weekmenu where wOid=#{wOid}
+    </select>
+
+    <select id="findoldMenu" resultType="com.ly.model.Worder">
+        select * from wmordert order by wOid desc
+    </select>
+
+    <select id="CfindoldMenu" resultType="com.ly.model.Worder">
+        select * from wmordert
+        <where>
+            <if test="year!=null">
+                and
+                year=#{year}
+            </if>
+            <if test="month!=null">
+                and
+                month=#{month}
+            </if>
+        </where>
+        order by wOid desc
+    </select>
+
+    <insert id="insertweekmenu" parameterType="com.ly.model.Menu">
+        insert into weekmenu (year,month,week,weekday,meatone,meattwo,vegetable,soup,date)
+        value(#{year},#{month},#{week},#{weekday},#{meatone},#{meattwo},#{vegetable},#{soup},#{date})
+    </insert>
+
+    <update id="updateMenuByMid" parameterType="com.ly.model.Menu">
+        update weekmenu set meatone=#{meatone},meattwo=#{meattwo},vegetable=#{vegetable},soup=#{soup}
+        where mid=#{mid};
+        update wmgordert set meatone=#{meatone},meattwo=#{meattwo},vegetable=#{vegetable},soup=#{soup}
+        where mid=#{mid}
+    </update>
+
+    <delete id="del" parameterType="com.ly.model.Menu">
+        delete from weekmenu where mid=#{mid};
+        delete from wmgordert where mid=#{mid}
+    </delete>
+
+    <delete id="clear" parameterType="com.ly.model.Menu">
+        delete from weekmenu
+    </delete>
+</mapper>

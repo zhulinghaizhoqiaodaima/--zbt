@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ly.dao.UserDao">
+    <update id="updateUser" parameterType="com.ly.model.User">
+        update message set password = #{password} where username = #{username}
+    </update>
+
+    <select id="selectUserByUserName" resultType="com.ly.model.User">
+        select * from message where username = #{username}
+    </select>
+
+    <select id="selectName" resultType="com.ly.model.User">
+        select name from message where username=#{username}
+    </select>
+
+    <select id="findEmp" resultType="com.ly.model.User">
+        select * from message
+    </select>
+
+    <select id="CfindEmp" resultType="com.ly.model.User">
+        select * from message
+        <where>
+            <if test="UserType!='选择身份'" >
+                UserType=#{UserType}
+            </if>
+            <if test="department!='选择部门'" >
+                and
+                department=#{department}
+            </if>
+            <if test="username !='' and username!=null">
+                and
+                username like concat('%',#{username},'%')
+            </if>
+            <if test="name !='' and name!=null">
+                and
+                name like concat('%',#{name},'%')
+            </if>
+        </where>
+    </select>
+
+    <select id="findDaw" resultType="com.ly.model.Daw">
+        select * from dayaw order by DAid desc
+    </select>
+
+    <select id="CfindDaw" resultType="com.ly.model.Daw">
+        select * from dayaw
+        <where>
+            <if test="post!='选择岗位'" >
+                post=#{post}
+            </if>
+            <if test="dname !='' and dname!=null">
+                and
+                dname like concat('%',#{dname},'%')
+            </if>
+        </where>
+        order by DAid desc
+    </select>
+
+    <select id="findOaw" resultType="com.ly.model.Daw">
+        select * from awordert order by AWid desc
+    </select>
+
+    <select id="CfindOaw" resultType="com.ly.model.Daw">
+        select * from awordert
+        <where>
+            <if test="awdate !='' and awdate!=null">
+                awdate like concat('%',#{awdate},'%')
+            </if>
+        </where>
+        order by AWid desc
+    </select>
+
+    <select id="PdDawByPostAndName" resultType="com.ly.model.Daw">
+        select * from dayAW where post=#{post} and dname=#{dname}
+    </select>
+
+    <select id="PDAWOrder" resultType="Integer">
+        select COUNT(*) from dayaw
+    </select>
+
+    <select id="findAwid" resultType="Integer">
+        select MAX(AWid) from awordert
+    </select>
+
+    <select id="findOgawByAWid" resultType="com.ly.model.Daw">
+        select * from awgordert where AWid=#{aWid}
+    </select>
+
+    <select id="findDawByDAid" resultType="com.ly.model.Daw">
+        select * from dayaw where DAid=#{aAid}
+    </select>
+
+    <select id="findDAid" resultType="Integer">
+        select MAX(DAid) from dayaw
+    </select>
+
+    <select id="ConditionFindEatEmp" resultType="com.ly.model.User">
+        select * from message
+        <where>
+            <if test="department!='选择部门'" >
+                department=#{department}
+            </if>
+            <if test="name !='' and name!=null">
+                and name like concat('%',#{name},'%')
+            </if>
+        </where>
+    </select>
+
+    <update id="doupdatem" parameterType="com.ly.model.User">
+        update message set UserType=#{UserType},name=#{name},department=#{department},sex=#{sex},age=#{age},phone=#{phone},address=#{address}
+                       where username=#{username}
+    </update>
+
+    <update id="updateNum" parameterType="com.ly.model.Daw">
+        update awordert set awnum=#{pd} where AWid=#{aWid}
+    </update>
+
+    <update id="updateDawByDAid" parameterType="com.ly.model.Daw">
+        update dayaw set ddate=#{ddate},dname=#{dname},post=#{post} where DAid=#{DAid};
+        update awgordert set ddate=#{ddate},dname=#{dname},post=#{post} where DAid=#{DAid};
+    </update>
+
+    <insert id="insertUser" parameterType="com.ly.model.User">
+        insert into message (department,username,password,UserType,name,sex,age,phone,address)
+        values (#{department},#{username},#{password},#{UserType},#{name},#{sex},#{age},#{phone},#{address})
+    </insert>
+
+    <insert id="intoAWordert" parameterType="com.ly.model.Daw">
+         insert into awordert (awdate,cname) values (#{awdate},#{cname})
+    </insert>
+
+    <insert id="intoDayAW" parameterType="com.ly.model.Daw">
+         insert into dayaw (ddate,post,dname) values (#{ddate},#{post},#{dname})
+    </insert>
+
+    <insert id="intoAwgordert" parameterType="com.ly.model.Daw">
+         insert into awgordert (ddate,post,dname,AWid,DAid) values (#{ddate},#{post},#{dname},#{AWid},#{DAid})
+    </insert>
+
+    <delete id="delEmpByusername" parameterType="com.ly.model.User">
+        delete from message where username=#{usernmae}
+    </delete>
+
+    <delete id="endDaw" parameterType="com.ly.model.Daw">
+        delete from dayaw
+    </delete>
+
+    <delete id="delDaw" parameterType="com.ly.model.Daw">
+        delete from dayaw where DAid=#{dAid};
+        delete from awgordert where DAid=#{dAid}
+    </delete>
+
+</mapper>

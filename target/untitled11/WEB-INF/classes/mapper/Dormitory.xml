@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ly.dao.DormitoryDao">
+      <select id="findDormitory" resultType="com.ly.model.Dormitory">
+           select * from dormitory
+      </select>
+
+    <select id="CfindDormitory" resultType="com.ly.model.Dormitory">
+        select * from dormitory
+        <where>
+            <if test="dcoding!='' and dcoding!=null" >
+                dcoding like concat('%',#{dcoding},'%')
+            </if>
+            <if test="dstate!='选择状态'">
+                and
+                dstate=#{dstate}
+            </if>
+            <if test="rname !='' and rname!=null">
+                and
+                rname like concat('%',#{rname},'%')
+            </if>
+        </where>
+    </select>
+
+    <select id="findDormitoryByDcoding" resultType="com.ly.model.Dormitory">
+        select * from dormitory where dcoding=#{dcoding}
+    </select>
+
+    <select id="findDormitoryByDid" resultType="com.ly.model.Dormitory">
+        select * from dormitory where Did=#{did}
+    </select>
+
+    <select id="findRname" resultType="Integer">
+        select COUNT(*) from dormitory where rname=#{rname}
+    </select>
+
+    <select id="findDoRecord" resultType="com.ly.model.Dorecord">
+        select * from dorecord order by Drid desc
+    </select>
+
+    <select id="CfindDoRecord" resultType="com.ly.model.Dorecord">
+        select * from dorecord
+        <where>
+            <if test="dcoding!='' and dcoding!=null" >
+                dcoding like concat('%',#{dcoding},'%')
+            </if>
+            <if test="bname !='' and bname!=null">
+                and
+                bname like concat('%',#{bname},'%')
+            </if>
+        </where>
+        order by Drid desc
+    </select>
+
+    <update id="UpdateDormitory" parameterType="com.ly.model.Dormitory">
+        update dormitory set dcoding=#{dcoding},dmessage=#{dmessgae} where Did=#{did}
+    </update>
+
+    <update id="RnameInDormitory" parameterType="com.ly.model.Dormitory">
+        update dormitory set rdate=#{rdate},rname=#{rname},dstate="已入住" where Did=#{did}
+    </update>
+
+    <update id="updateDstate" parameterType="com.ly.model.Dormitory">
+        update dormitory set dstate="未入住",rname=null,rdate=null where Did=#{did}
+    </update>
+
+    <insert id="intoRecord" parameterType="com.ly.model.Dorecord">
+        insert into dorecord (behavior,dcoding,bname,bdate) values (#{behavior},#{dcoding},#{bname},#{bdate})
+    </insert>
+
+    <insert id="intoDormitory" parameterType="com.ly.model.Dormitory">
+        insert into dormitory (dcoding,dmessage,dstate) values (#{dcoding},#{dmessage},#{dstate})
+    </insert>
+
+</mapper>

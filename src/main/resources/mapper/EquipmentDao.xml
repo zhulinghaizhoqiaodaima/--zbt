@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ly.dao.EquipmentDao">
+    <select id="FindEqMessage" resultType="com.ly.model.Equipment">
+          select * from equipment
+    </select>
+
+    <select id="CFindEqMessage" resultType="com.ly.model.Equipment">
+        select * from equipment
+        <where>
+            <if test="department!='选择部门'" >
+                department=#{department}
+            </if>
+            <if test="eqname !='' and eqname!=null">
+                and
+                eqname like concat('%',#{eqname},'%')
+            </if>
+            <if test="eqstate!='状态'" >
+                and
+                eqstate=#{eqstate}
+            </if>
+        </where>
+    </select>
+
+    <select id="FindEquipmentByEqid" resultType="com.ly.model.Equipment">
+        select * from equipment where Eqid=#{eqid}
+    </select>
+
+    <select id="findeRepairs" resultType="com.ly.model.Repairs">
+        select * from repairs
+    </select>
+
+    <select id="CfindeRepairs" resultType="com.ly.model.Repairs">
+        select * from repairs
+        <where>
+            <if test="eqname !='' and eqname!=null">
+                eqname like concat('%',#{eqname},'%')
+            </if>
+            <if test="state!='状态'" >
+                and
+                state=#{state}
+            </if>
+        </where>
+    </select>
+
+    <select id="findEqidByRid" resultType="Integer">
+        select Eqid from repairs where rid=#{rid}
+    </select>
+
+    <select id="findRepairsByRid" resultType="com.ly.model.Repairs">
+         select * from repairs where rid=#{rid}
+    </select>
+
+    <select id="findStateByRid" resultType="String">
+         select state from repairs where rid=#{rid}
+    </select>
+
+    <insert id="insertRepairs" parameterType="com.ly.model.Repairs">
+        insert into repairs (eqname,department,issue,btime,state,Eqid) values (#{eqname},#{department},#{issue},#{btime},#{state},#{eqid})
+    </insert>
+
+    <insert id="insertEquipment" parameterType="com.ly.model.Equipment">
+        insert into equipment (eqname,department,eqmessage,eqstate,rtime) values (#{eqname},#{department},#{eqmessage},#{eqstate},#{rtime})
+    </insert>
+
+    <update id="updateEqState" parameterType="com.ly.model.Repairs">
+        update equipment set eqstate="维修中" where Eqid=#{eqid}
+    </update>
+
+    <update id="FinishMaintain" parameterType="com.ly.model.Repairs">
+        update repairs set state="维修完成",wtime=#{wtime},wname=#{wname} where rid=#{rid};
+        update equipment set eqstate="正常",wtime=#{wtime} where Eqid=#{eqid}
+    </update>
+
+    <update id="updateEq" parameterType="com.ly.model.Equipment">
+        update equipment set eqname=#{eqname},department=#{department},eqmessage=#{eqmessage},rtime=#{rtime} where Eqid=#{eqid}
+    </update>
+
+</mapper>

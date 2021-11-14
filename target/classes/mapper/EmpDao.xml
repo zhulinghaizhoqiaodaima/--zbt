@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ly.dao.EmpDao">
+    <select id="PdMenu" resultType="com.ly.model.Emp">
+        select * from emgordert where mid=#{mid} and username=#{username}
+    </select>
+
+    <select id="FindeNum" resultType="Integer">
+        select enumber from message where username=#{username}
+    </select>
+
+    <select id="FindeOid" resultType="Integer">
+        select MAX(eOid) from emordert where username=#{username}
+    </select>
+
+    <select id="findemordert" resultType="com.ly.model.Emp">
+        select * from emordert where username=#{username} order by eOid desc
+    </select>
+
+    <select id="Cfindemordert" resultType="com.ly.model.Emp">
+        select * from emordert
+        <where>
+            <if test="username !='' and username!=null">
+                username=#{username}
+            </if>
+            <if test="year!=null">
+                and
+                year=#{year}
+            </if>
+            <if test="month!=null" >
+                and
+                month=#{month}
+            </if>
+        </where>
+        order by eOid desc
+    </select>
+
+    <select id="findgemOrdertByeOid" resultType="com.ly.model.Emp">
+        select * from emgordert where eOid=#{eOid}
+    </select>
+
+    <select id="findEatEmp" resultType="com.ly.model.Emp">
+        select * from emgordert where year=#{year} and month=#{month} and week=#{week} and weekday=#{weekday}
+    </select>
+
+    <select id="CempEatlist" resultType="com.ly.model.Emp">
+        select * from emgordert
+        <where>
+            <if test="year!=null and month!=null and week!=null and weekday!=null">
+               year=#{year} and month=#{month} and week=#{week} and weekday=#{weekday}
+            </if>
+            <if test="department!='选择部门'" >
+               and department=#{department}
+            </if>
+            <if test="name !='' and name!=null">
+                and name like concat('%',#{name},'%')
+            </if>
+        </where>
+    </select>
+
+    <select id="findUnameBygeOid" resultType="String">
+        select username from emgordert where geOid=#{geOid}
+    </select>
+
+    <select id="findemp" resultType="com.ly.model.User">
+        select * from message
+    </select>
+
+    <select id="selectByid" resultType="com.ly.model.User">
+        select * from message where id=#{id}
+    </select>
+
+    <select id="findMenuByDate" resultType="com.ly.model.Emp">
+        select * from weekmenu where year=#{year} and month=#{month} and week=#{week} and weekday=#{weekday}
+    </select>
+
+    <select id="findoldeemp" resultType="com.ly.model.Emp">
+        select year,month,week,weekday,ymwwd,COUNT(1) AS c from emgordert GROUP BY year,month,week,weekday,ymwwd HAVING c>1 order by geOid desc
+    </select>
+
+    <select id="findempoldeatlist" resultType="com.ly.model.Emp">
+        select * from emgordert where ymwwd=#{ymwwd}
+    </select>
+
+    <select id="findeatnum" resultType="Integer">
+        select COUNT(*) from emgordert where ymwwd=#{ymwwd}
+    </select>
+
+    <select id="findOtheremp" resultType="com.ly.model.Oemp">
+        select * from othereatlist order by oEid desc
+    </select>
+
+    <select id="CfindOtheremp" resultType="com.ly.model.Oemp">
+        select * from othereatlist
+        <where>
+              <if test="year!=null">
+                   and
+                   year=#{year}
+              </if>
+              <if test="month!=null">
+                   and
+                   month=#{month}
+              </if>
+        </where>
+        order by oEid desc
+    </select>
+
+    <select id="findoMessageByoEid" resultType="com.ly.model.Oemp">
+        select * from othereatlist where oEid=#{oEid}
+    </select>
+
+    <select id="findlMessage" resultType="com.ly.model.Lmessage">
+        select * from lmessage where name=#{name} order by lMid desc
+    </select>
+
+    <select id="CfindAlllMessage" resultType="com.ly.model.Lmessage">
+        select * from lmessage
+        <where>
+            <if test="name !='' and name!=null">
+                 name like concat('%',#{name},'%')
+             </if>
+        </where>
+        order by lMid desc
+    </select>
+
+    <select id="findAlllMessage" resultType="com.ly.model.Lmessage">
+        select * from lmessage order by lMid desc
+    </select>
+
+    <select id="findlMessageBylMid" resultType="com.ly.model.Lmessage">
+        select * from lmessage where lMid=#{lMid}
+    </select>
+
+    <select id="findemplist" resultType="com.ly.model.Emp">
+        select * from emordert order by eOid desc
+    </select>
+
+    <select id="Cfindemplist" resultType="com.ly.model.Emp">
+        select * from emordert
+        <where>
+            <if test="state!='选择状态'" >
+                state=#{state}
+            </if>
+            <if test="name !='' and name!=null">
+                and
+                name like concat('%',#{name},'%')
+            </if>
+            <if test="year!=null">
+                and
+                year=#{year}
+            </if>
+            <if test="month!=null">
+                and
+                month=#{month}
+            </if>
+        </where>
+        order by eOid desc
+    </select>
+
+    <select id="findeOidBygeOid" resultType="Integer">
+        select eOid from emgordert where geOid=#{geOid}
+    </select>
+
+    <select id="findUsernameByeOid" resultType="String">
+        select username from emordert where eOid=#{eOid}
+    </select>
+
+    <select id="findEmpDByName" resultType="com.ly.model.Dormitory">
+        select * from dormitory where rname=#{rname}
+    </select>
+
+    <select id="findEmpDoRecordByBname" resultType="com.ly.model.Dorecord">
+        select * from dorecord where bname=#{bname} order by Drid desc
+    </select>
+
+    <select id="CfindEmpDoRecordByBname" resultType="com.ly.model.Dorecord">
+        select * from dorecord
+        <where>
+            <if test="bname!=null and bname!=''">
+                bname=#{bname}
+            </if>
+            <if test="bdate!=null and bdate!=''">
+                and
+                bdate like concat('%',#{bdate},'%')
+            </if>
+        </where>
+        order by Drid desc
+    </select>
+
+    <insert id="intoEmgOrdert" parameterType="com.ly.model.Emp">
+        insert into emgordert (mid,year,month,week,weekday,meatone,meattwo,vegetable,soup,etime,eOid,username,name,UserType,department,ymwwd)
+        values (#{mid},#{year},#{month},#{week},#{weekday},#{meatone},#{meattwo},#{vegetable},#{soup},#{etime},#{eOid},#{username},#{name},#{UserType},#{department},#{ymwwd})
+    </insert>
+
+    <insert id="intoEmOrdert" parameterType="com.ly.model.Emp">
+        insert into emordert (year,month,username,name) values (#{year},#{month},#{username},#{name});
+    </insert>
+
+    <insert id="insertOelist" parameterType="com.ly.model.Oemp">
+        insert into othereatlist (year,month,week,weekday,empType,pnum,fnum,food)
+        values (#{year},#{month},#{week},#{weekday},#{empType},#{pnum},#{fnum},#{food})
+    </insert>
+
+    <insert id="insertlMessage" parameterType="com.ly.model.Lmessage">
+        insert into lmessage (name,message,ltime) values (#{name},#{message},#{ltime})
+    </insert>
+
+    <update id="updateeNum" parameterType="com.ly.model.Emp">
+        update emordert set enumber=enumber+1 where eOid=#{eOid};
+        update message set enumber=enumber+1 where username=#{username};
+    </update>
+
+    <update id="updateeNumd" parameterType="com.ly.model.Emp">
+        update emordert set enumber=enumber-1 where eOid=#{eOid};
+        update message set enumber=enumber-1 where username=#{username}
+    </update>
+
+    <update id="updateeTotal" parameterType="com.ly.model.Emp">
+        update emordert set total=enumber*price where eOid=#{eOid};
+    </update>
+
+    <update id="updateOemByoEid" parameterType="com.ly.model.Oemp">
+        update othereatlist set year=#{year},month=#{month},week=#{week},weekday=#{weekday},
+                                empType=#{empType},pnum=#{pnum},food=#{food},fnum=#{fnum}
+        where oEid=#{oEid}
+    </update>
+
+    <update id="updatelMBylMid" parameterType="com.ly.model.Lmessage">
+         update lmessage set message=#{message} where lMid=#{lMid}
+    </update>
+
+    <update id="eatOver" parameterType="com.ly.model.Emp">
+         update message set enumber=0 where username=#{username};
+         update emordert set state="已缴费" where eOid=#{eOid}
+    </update>
+
+    <delete id="deleatemp" parameterType="com.ly.model.Emp">
+        delete from emgordert where geOid=#{geOid}
+    </delete>
+
+    <delete id="deloem" parameterType="com.ly.model.Oemp">
+        delete from othereatlist where oEid=#{oEid}
+    </delete>
+
+    <delete id="dellm" parameterType="com.ly.model.Lmessage">
+        delete from lmessage where lMid=#{lMid}
+    </delete>
+</mapper>
